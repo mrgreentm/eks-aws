@@ -16,3 +16,21 @@ resource "aws_subnet" "subnets" {
     Name = "${var.prefix}-subnet-${count.index}"
   }
 }
+
+resource "aws_internet_gateway" "new-internet-gateway" {
+  vpc_id = aws_vpc.minha_vpc.id
+  tags = {
+    Name = "${var.prefix}-igw"
+  } 
+}
+
+resource "aws_route_table" "new-route-table" {
+  vpc_id = aws_vpc.minha_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.new-internet-gateway.id
+  }
+  tags = {
+    Name = "${var.prefix}-rtb"
+  }
+}
